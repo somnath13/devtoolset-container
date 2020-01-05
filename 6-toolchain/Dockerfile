@@ -1,4 +1,4 @@
-FROM centos/s2i-core-centos7
+FROM centos:centos6
 LABEL MAINTAINER Marek Polacek <polacek@redhat.com>
 
 ENV SUMMARY="Red Hat Developer Toolset 6 Toolchain container image" \
@@ -12,16 +12,16 @@ toolchain can then also be deployed and run on multiple versions of \
 Red Hat Enterprise Linux."
 
 LABEL com.redhat.component="devtoolset-6-toolchain-container" \
-      name="centos/devtoolset-6-toolchain-centos7" \
+      name="mystic/devtoolset-6-toolchain-centos6" \
       version="6" \
       summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
       io.k8s.display-name="Developer Toolset 6 Toolchain" \
-      usage="docker run -ti -v /src/app:/opt/app-root/src:z centos/devtoolset-6-toolchain-centos7 bash"
+      usage="docker run -ti -v /src/app:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 bash"
 
 RUN yum install -y centos-release-scl-rh && \
-    INSTALL_PKGS="devtoolset-6-gcc devtoolset-6-gcc-c++ devtoolset-6-gcc-gfortran devtoolset-6-gdb" && \
+    INSTALL_PKGS="devtoolset-6-toolchain" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
@@ -33,13 +33,13 @@ ENV HOME=/opt/app-root/src \
     PATH=/opt/app-root/src/bin:/opt/app-root/bin:/opt/rh/devtoolset-6/root/usr/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN mkdir -p ${HOME} && \
-    groupadd -r default -f -g 1001 && \
-    usermod -g default default && \
-    chown -R 1001:1001 /opt/app-root /usr/bin/container-entrypoint /usr/bin/usage && \
+    groupadd -g 1000 som && \
+    useradd -g 1000 -u 1000 som && \
+    chown -R 1000:1000 /opt/app-root /usr/bin/container-entrypoint /usr/bin/usage && \
     chmod u+x /usr/bin/usage && \
     rpm-file-permissions
 
-USER 1001
+USER 1000
 
 WORKDIR ${HOME}
 
