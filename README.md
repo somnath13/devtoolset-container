@@ -6,27 +6,21 @@ devtoolset-6-toolchain
 
 First build the CentOS6 based image
 
-    ```
     $ cd 6-toolchain/
     $ docker build -t mystic/devtoolset-6-toolchain-centos6 .
-    ```
 
 If you have C application sources in ~/sources/myapp:
 
-    ```
     $ cd ~/sources
     $ docker run -ti --rm -v $PWD:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 bash
     bash-4.1$ cd myapp/
     bash-4.1$ make
 
-    ```
-
 To run in non-interactive mode:
 
-    ```
     $ cd ~/sources
     $ docker run -ti --rm -v $PWD:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 make -C myapp
-    ```
+
 
 ORIGINAL Developer Toolset Docker images
 ===============================
