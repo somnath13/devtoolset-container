@@ -1,3 +1,9 @@
+Build devtoolset-6-toolchain for CentOS6
+---------------
+* cd 6-toolchain/
+* docker build -t mystic/devtoolset-6-toolchain-centos6 .
+
+
 Developer Toolset Docker images
 ===============================
 
