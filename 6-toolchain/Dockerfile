@@ -21,7 +21,7 @@ LABEL com.redhat.component="devtoolset-6-toolchain-container" \
       usage="docker run -ti -v /src/app:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 bash"
 
 RUN yum install -y centos-release-scl-rh && \
-    INSTALL_PKGS="devtoolset-6-toolchain" && \
+    INSTALL_PKGS="devtoolset-6-toolchain automake autoconf cmake" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*'
@@ -29,19 +29,21 @@ RUN yum install -y centos-release-scl-rh && \
 # Copy extra files to the image.
 COPY ./root/ /
 
-ENV HOME=/opt/app-root/src \
-    PATH=/opt/app-root/src/bin:/opt/app-root/bin:/opt/rh/devtoolset-6/root/usr/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV HOME=/home/mystic \
+    SRCROOT=/opt/app-root/src \
+    WORKDIR=/home/mystic/work \
+    PATH=/home/mystic/work/bin:/opt/app-root/src/bin:/opt/app-root/bin:/opt/rh/devtoolset-6/root/usr/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-RUN mkdir -p ${HOME} && \
-    groupadd -g 1000 som && \
-    useradd -g 1000 -u 1000 som && \
-    chown -R 1000:1000 /opt/app-root /usr/bin/container-entrypoint /usr/bin/usage && \
+RUN mkdir -p ${SRCROOT} ${WORKDIR} && \
+    groupadd -g 1000 mystic && \
+    useradd -g 1000 -u 1000 mystic && \
+    chown -R 1000:1000 /home/mystic /opt/app-root /usr/bin/container-entrypoint /usr/bin/usage && \
     chmod u+x /usr/bin/usage && \
     rpm-file-permissions
 
 USER 1000
 
-WORKDIR ${HOME}
+WORKDIR ${WORKDIR}
 
 # Enable the SCL for all bash scripts.
 ENV BASH_ENV=/opt/app-root/etc/scl_enable \
