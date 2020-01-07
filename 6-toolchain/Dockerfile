@@ -1,7 +1,7 @@
 FROM centos:centos6
-LABEL MAINTAINER Marek Polacek <polacek@redhat.com>
+LABEL MAINTAINER Som Ghosh <ghosh.som@gmail.com>
 
-ENV SUMMARY="Red Hat Developer Toolset 6 Toolchain container image" \
+ENV SUMMARY="Red Hat Developer Toolset 6 Toolchain container image based on CentOS6" \
     DESCRIPTION="Platform for building C/C++ applications using Red Hat \
 Developer Toolset 6. Red Hat Developer Toolset is a Red Hat \
 offering for developers on the Red Hat Enterprise Linux platform. \
@@ -15,10 +15,7 @@ LABEL com.redhat.component="devtoolset-6-toolchain-container" \
       name="mystic/devtoolset-6-toolchain-centos6" \
       version="6" \
       summary="$SUMMARY" \
-      description="$DESCRIPTION" \
-      io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="Developer Toolset 6 Toolchain" \
-      usage="docker run -ti -v /src/app:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 bash"
+      description="$DESCRIPTION"
 
 RUN yum install -y centos-release-scl-rh && \
     INSTALL_PKGS="devtoolset-6-toolchain automake autoconf cmake" && \
@@ -29,19 +26,17 @@ RUN yum install -y centos-release-scl-rh && \
 # Copy extra files to the image.
 COPY ./root/ /
 
-ENV HOME=/home/mystic \
-    SRCROOT=/opt/app-root/src \
+# Set environment variables
+ENV MYUSER=mystic \
+    HOME=/home/mystic \
     WORKDIR=/home/mystic/work \
-    PATH=/home/mystic/work/bin:/opt/app-root/src/bin:/opt/app-root/bin:/opt/rh/devtoolset-6/root/usr/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    PATH=/home/mystic/work/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-RUN mkdir -p ${SRCROOT} ${WORKDIR} && \
-    groupadd -g 1000 mystic && \
-    useradd -g 1000 -u 1000 mystic && \
-    chown -R 1000:1000 /home/mystic /opt/app-root /usr/bin/container-entrypoint /usr/bin/usage && \
+RUN mkdir -p ${WORKDIR} && \
+    groupadd -g 1001 ${MYUSER} && \
+    useradd -g 1001 -u 1001 ${MYUSER} && \
     chmod u+x /usr/bin/usage && \
     rpm-file-permissions
-
-USER 1000
 
 WORKDIR ${WORKDIR}
 

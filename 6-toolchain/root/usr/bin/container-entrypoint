@@ -1,5 +1,39 @@
 #!/bin/bash
 
+# NOTE when runnig as root, modify the defult user's ID to match
+# the ID of the owner of the mounted WORKDIR folder 
+if [[ $(id -u) -eq 0 ]]; then
+  if mount | grep -q "${WORKDIR}"; then
+    # get uid/gid of the owner of the WORKDIR folder
+    declare -ri NEW_UID=$(stat -c "%u" "${WORKDIR}")
+    declare -ri NEW_GID=$(stat -c "%g" "${WORKDIR}")
+
+    # if mounted WORKDIR owner is a regular user...
+    if [[ ${NEW_UID} -ge 500 ]] && [[ ${NEW_GID} -ge 500 ]]; then
+      # get the current uid/gid of default user mystic
+      declare -ri CUR_UID=$(getent passwd ${MYUSER} | cut -f3 -d:)
+      declare -ri CUR_GID=$(getent group ${MYUSER} | cut -f3 -d:)
+
+      # if they don't match, adjust
+      if [[ "${NEW_GID}" != "${CUR_GID}" ]]; then
+        echo "NOTE: Changing GID of ${MYUSER} from $CUR_GID to $NEW_GID"
+        groupmod -g ${NEW_GID} ${MYUSER}
+      fi
+      if [[ "${NEW_UID}" != "${CUR_UID}" ]]; then
+        echo "NOTE: Changing UID of ${MYUSER} from $CUR_UID to $NEW_UID"
+        usermod -u ${NEW_UID} ${MYUSER}
+      fi
+    else
+      echo "NOTE: WORKDIR owner is not a regular user and cannot be mapped to ${MYUSER}"
+      ls -ndl ${WORKDIR}
+    fi
+
+    # drop access to mystic and run cmd
+    exec gosu ${MYUSER} "$@"
+  fi
+fi
+
+# original code -- som
 set -eu
 cmd="$1"; shift
 exec $cmd "$@"

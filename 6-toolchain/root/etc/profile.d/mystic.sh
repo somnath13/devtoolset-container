@@ -1,5 +1,3 @@
-export WORKDIR=/home/mystic/work
-
 # Add some aliases here -- som
 alias a='alias'
 alias j='jobs'
@@ -21,5 +19,5 @@ alias cdw="cd ${WORKDIR}"
 alias cdmy="cd ${WORKDIR}/mystic"
 alias cdut="cd ${WORKDIR}/utilities"
 
-PS1='\h ${PWD} ${?##0}\$ '
+PS1='\u ${PWD} ${?##0}\$ '
 
