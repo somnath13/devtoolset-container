@@ -1,0 +1,12 @@
+.hg
+.git
+.gitignore
+.dockerignore
+**/*.swn
+**/*.swo
+**/*.swp
+.project
+nbproject/
+ls-R
+tags
+

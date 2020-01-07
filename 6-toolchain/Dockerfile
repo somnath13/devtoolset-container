@@ -30,12 +30,12 @@ COPY ./root/ /
 ENV MYUSER=mystic \
     HOME=/home/mystic \
     WORKDIR=/home/mystic/work \
-    PATH=/home/mystic/work/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    SRCROOT=/opt/app-root/src \
+    PATH=/opt/app-root/bin:/home/mystic/work/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-RUN mkdir -p ${WORKDIR} && \
+RUN mkdir -p ${WORKDIR} ${SRCROOT} && \
     groupadd -g 1001 ${MYUSER} && \
     useradd -g 1001 -u 1001 ${MYUSER} && \
-    chmod u+x /usr/bin/usage && \
     rpm-file-permissions
 
 WORKDIR ${WORKDIR}

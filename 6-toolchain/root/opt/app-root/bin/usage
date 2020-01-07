@@ -16,7 +16,7 @@ To build in non-interactive mode:
 
 To start an interactive bash session as root:
 
-    $ docker run -ti --rm -v $PWD:/root:z mystic/devtoolset-6-toolchain-centos6 bash -l
+    $ docker run -ti --rm -v $PWD:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 bash -l
 
 EOF
 
