@@ -1,20 +1,21 @@
 #!/bin/bash
 
-# NOTE when runnig as root, modify the defult user's ID to match
-# the ID of the owner of the mounted WORKDIR folder 
 if [[ $(id -u) -eq 0 ]]; then
-  if mount | grep -q "${WORKDIR}"; then
-    # get uid/gid of the owner of the WORKDIR folder
-    declare -ri NEW_UID=$(stat -c "%u" "${WORKDIR}")
-    declare -ri NEW_GID=$(stat -c "%g" "${WORKDIR}")
+  # look for a mounted directory under WORKDIR
+  declare -r MOUNT_PT=$(mount | grep "${WORKDIR}" | awk '{ print $3 }')
 
-    # if mounted WORKDIR owner is a regular user...
+  if [[ -n "${MOUNT_PT}" ]]; then
+    # get uid/gid of the owner of the mounted folder
+    declare -ri NEW_UID=$(stat -c "%u" "${MOUNT_PT}")
+    declare -ri NEW_GID=$(stat -c "%g" "${MOUNT_PT}")
+
+    # if the owner of the mounted directory is a regular user
     if [[ ${NEW_UID} -ge 500 ]] && [[ ${NEW_GID} -ge 500 ]]; then
-      # get the current uid/gid of default user mystic
+      # get the current uid/gid of default user
       declare -ri CUR_UID=$(getent passwd ${MYUSER} | cut -f3 -d:)
       declare -ri CUR_GID=$(getent group ${MYUSER} | cut -f3 -d:)
 
-      # if they don't match, adjust
+      # modify the defult user's ID to match the owner of the mounted directory
       if [[ "${NEW_GID}" != "${CUR_GID}" ]]; then
         echo "NOTE: Changing GID of ${MYUSER} from $CUR_GID to $NEW_GID"
         groupmod -g ${NEW_GID} ${MYUSER}
@@ -24,8 +25,8 @@ if [[ $(id -u) -eq 0 ]]; then
         usermod -u ${NEW_UID} ${MYUSER}
       fi
     else
-      echo "NOTE: WORKDIR owner is not a regular user and cannot be mapped to ${MYUSER}"
-      ls -ndl ${WORKDIR}
+      echo "NOTE: owner of ${MOUNT_PT} is not a regular user and cannot be mapped to ${MYUSER}"
+      ls -ndl ${MOUNT_PT}
     fi
 
     # drop access to mystic and run cmd
