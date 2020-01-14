@@ -11,11 +11,11 @@ Enterprise Linux. Executables built with the Red Hat Developer Toolset \
 toolchain can then also be deployed and run on multiple versions of \
 Red Hat Enterprise Linux."
 
-LABEL com.redhat.component="devtoolset-6-toolchain-container" \
-      name="mystic/devtoolset-6-toolchain-centos6" \
+LABEL name="mystic/devtoolset-6-toolchain-centos6" \
       version="6" \
       summary="$SUMMARY" \
-      description="$DESCRIPTION"
+      description="$DESCRIPTION" \
+      usage="docker run --rm  mystic/devtoolset-6-toolchain-centos6"
 
 RUN yum install -y centos-release-scl-rh && \
     INSTALL_PKGS="devtoolset-6-toolchain automake autoconf cmake" && \

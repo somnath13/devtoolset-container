@@ -11,8 +11,8 @@ If you want to build C source code in ~/sources/myapp:
 
 To build in non-interactive mode:
 
-    $ cd ~/sources
-    $ docker run -ti --rm -v $PWD:/home/mystic/work:z mystic/devtoolset-6-toolchain-centos6 make -C myapp
+    $ cd ~/sources/myapp
+    $ docker run --rm -v $PWD:/home/mystic/work/myapp:z mystic/devtoolset-6-toolchain-centos6 make -C myapp
 
 To start an interactive bash session as root:
 
