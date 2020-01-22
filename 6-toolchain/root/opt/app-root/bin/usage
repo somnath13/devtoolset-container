@@ -1,22 +1,24 @@
 #!/bin/sh
+
 cat <<'EOF'
-This is mystic/devtoolset-6-toolchain-centos6 docker image.
+
+This is mysticvideo/devtoolset-6-toolchain-centos6 docker image for building C/C++ applications using Developer Toolset 6 Toolchain for CentOS 6.
 
 If you want to build C source code in ~/sources/myapp:
 
     $ cd ~/sources
-    $ docker run -ti --rm -v $PWD:/home/mystic/work:z mystic/devtoolset-6-toolchain-centos6 bash -l
+    $ docker run -ti --rm -v $PWD:/home/mystic/work:z mysticvideo/devtoolset-6-toolchain-centos6 bash -l
     bash-4.1$ cd myapp/
     bash-4.1$ make
 
 To build in non-interactive mode:
 
     $ cd ~/sources/myapp
-    $ docker run --rm -v $PWD:/home/mystic/work/myapp:z mystic/devtoolset-6-toolchain-centos6 make -C myapp
+    $ docker run --rm -v $PWD:/home/mystic/work/myapp:z mysticvideo/devtoolset-6-toolchain-centos6 make -C myapp
 
 To start an interactive bash session as root:
 
-    $ docker run -ti --rm -v $PWD:/opt/app-root/src:z mystic/devtoolset-6-toolchain-centos6 bash -l
+    $ docker run -ti --rm -v $PWD:/opt/app-root/src:z mysticvideo/devtoolset-6-toolchain-centos6 bash -l
 
 EOF
 

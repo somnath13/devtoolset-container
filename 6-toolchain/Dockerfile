@@ -11,11 +11,11 @@ Enterprise Linux. Executables built with the Red Hat Developer Toolset \
 toolchain can then also be deployed and run on multiple versions of \
 Red Hat Enterprise Linux."
 
-LABEL name="mystic/devtoolset-6-toolchain-centos6" \
+LABEL name="mysticvideo/devtoolset-6-toolchain-centos6" \
       version="6" \
       summary="$SUMMARY" \
       description="$DESCRIPTION" \
-      usage="docker run --rm  mystic/devtoolset-6-toolchain-centos6"
+      usage="docker run --rm mysticvideo/devtoolset-6-toolchain-centos6"
 
 RUN yum install -y centos-release-scl-rh && \
     INSTALL_PKGS="devtoolset-6-toolchain automake autoconf cmake" && \
@@ -33,9 +33,10 @@ ENV MYUSER=mystic \
     SRCROOT=/opt/app-root/src \
     PATH=/opt/app-root/bin:/home/mystic/work/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+# Add a default user
 RUN mkdir -p ${WORKDIR} ${SRCROOT} && \
-    groupadd -g 1001 ${MYUSER} && \
-    useradd -g 1001 -u 1001 ${MYUSER} && \
+    groupadd -g 1000 ${MYUSER} && \
+    useradd -g 1000 -u 1000 ${MYUSER} && \
     rpm-file-permissions
 
 WORKDIR ${WORKDIR}
